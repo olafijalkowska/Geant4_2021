@@ -27,8 +27,13 @@
 
 bool isInsideTheSphere(std::vector<double> point, double radius)
 {
-
-//fill the code
+    double distanceFromZero=0;
+    for(unsigned int i =0; i!= point.size(); ++i)
+        distanceFromZero += point.at(i)*point.at(i);
+    if(distanceFromZero < radius*radius)
+        return true;
+    else    
+        return false;
 }
 
 std::vector<double> makeRandomPoint(int size, double radius, std::default_random_engine& engine)
@@ -44,11 +49,21 @@ std::vector<double> makeRandomPoint(int size, double radius, std::default_random
 int main()
 {
     int nrOfPoints = 100000;
-    int size = 2;
-    double radius = 1;
+    int size = 4;
+    double radius = 3;
     std::random_device rd;
     std::default_random_engine engine(rd());
 //fill the code
+    int nrOfPointsInside = 0;
+    for(int i=0; i!= nrOfPoints; ++i)
+    {
+        auto point = makeRandomPoint(size, radius, engine);
+        if(isInsideTheSphere(point, radius))
+            nrOfPointsInside ++;    
+    }
+    double volume = (double)nrOfPointsInside/nrOfPoints *pow(2.*radius, size);
+    std::cout << "monte Carlo: " << volume << " Analitycznie: "<<pow(M_PI,2)/2 * pow(radius, 4) << std::endl;
+    
 }
 
 
