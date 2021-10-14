@@ -24,8 +24,8 @@ int main(int argc, char *argv[])
     
     std::random_device rd;
     std::default_random_engine engine(rd());
-    //Ruletka* ruletka = new Uczciwa(engine);  
-    Ruletka* ruletka = new Amerykanska(engine);  
+    Ruletka* ruletka = new Uczciwa(engine);  
+    //Ruletka* ruletka = new Amerykanska(engine);  
     //Ruletka* ruletka = new Europejska(engine);
      
     double wygrana = zagraj(ruletka, zaklad, liczbaZakladow, stawka);
@@ -37,5 +37,12 @@ int main(int argc, char *argv[])
 
 double zagraj(Ruletka* ruletka, int zaklad, int liczbaZakladow, double stawka)
 {
-
+    double wygrana =0;
+    for(int i=0; i!= liczbaZakladow; ++i)
+    {
+        if(ruletka->zakrec() == zaklad)
+            wygrana+= stawka*35;
+    
+    }
+    return wygrana;
 }

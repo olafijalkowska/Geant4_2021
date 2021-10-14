@@ -17,7 +17,7 @@ class Uczciwa: public Ruletka
 public:
     Uczciwa(std::default_random_engine& engine);
     ~Uczciwa(){};
-    //zwraca liczbę losową od 0 do 36
+    //zwraca liczbę losową od 1 do 36
     virtual int zakrec();    
 };
 
