@@ -17,12 +17,11 @@
 #include "G4MultiFunctionalDetector.hh"
 #include "G4SDManager.hh"
 #include "G4PSEnergyDeposit.hh"
-
+#include "HumanPhantom.hh"
 
 DetectorConstruction::DetectorConstruction()
 {
     worldLogic = 0L;
-    fantomLogVol=0L;
     cylinderLogVol=0L;
     man = G4NistManager::Instance();
 }
@@ -32,9 +31,7 @@ DetectorConstruction::DetectorConstruction()
 DetectorConstruction::~DetectorConstruction() 
 {
     if(worldLogic != 0L)
-        delete worldLogic;
-    if(fantomLogVol != 0L)
-        delete fantomLogVol;        
+        delete worldLogic;      
     if(cylinderLogVol != 0L)
         delete cylinderLogVol; 
 }
@@ -43,7 +40,7 @@ DetectorConstruction::~DetectorConstruction()
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
     G4VPhysicalVolume* worldPhys = ConstructWorld();
-    ConstructHumanFantom();
+    ConstructHumanPhantom();
     ConstructCylinder();
     return worldPhys;
 }
@@ -69,35 +66,12 @@ G4VPhysicalVolume* DetectorConstruction::ConstructWorld()
 
 }
 
-G4Material* DetectorConstruction::MakeWater()
-{
-    G4Element* H = man->FindOrBuildElement("H");
-    G4Element* O = man->FindOrBuildElement("O");
-    G4Material* water = new G4Material("water", 1.0*g/cm3, 2);
-    water->AddElement(H, 2);
-    water->AddElement(O, 1);
-    return water;
 
-}
-
-void DetectorConstruction::ConstructHumanFantom()
+void DetectorConstruction::ConstructHumanPhantom()
 {   
-    G4double radiusMin = 0;
-    G4double radiusMax = 15*cm;
-    G4double length = 170*cm;
-    G4Tubs* fantomSolid = new G4Tubs("fantomSolid", radiusMin, radiusMax, length/2., 0*deg, 360*deg);
-    G4Material* water = MakeWater();
-    fantomLogVol = new G4LogicalVolume(fantomSolid, water, "fantomLogVol");
-
-     
-    G4VisAttributes* fantomVisAtt = new G4VisAttributes( G4Colour(1,0.8,0.8));
-	fantomVisAtt->SetForceAuxEdgeVisible(true);// Can see outline when drawn with lines
-	//fantomVisAtt->SetForceSolid(true);
-	fantomLogVol->SetVisAttributes(fantomVisAtt);
-
-	G4ThreeVector pos(0,0,0);    
-	new G4PVPlacement(0, pos, fantomLogVol, "fantom", worldLogic, 0, 0);
-	
+    HumanPhantom* phantom = new HumanPhantom(170*cm, 15*cm);
+    G4ThreeVector pos(0,0,0);
+	phantom->Place(0, pos, "fantom", worldLogic, 0);	
 }
 
 
@@ -123,9 +97,9 @@ void DetectorConstruction::ConstructCylinder()
 }
 //NaI
 //wysokość 10 cm
-//promień 3 cm
-//teflon 3 mm
-//aluminium 3 mm
+//promień 4 cm
+//teflon 1 mm
+//odsunięcie od krawędzi: 5 mm
 
 void DetectorConstruction::ConstructSDandField() 
 {
