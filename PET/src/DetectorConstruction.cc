@@ -23,7 +23,16 @@ DetectorConstruction::DetectorConstruction()
 {
     worldLogic = 0L;
     cylinderLogVol=0L;
+    detectorLogVol=0L;
     man = G4NistManager::Instance();
+    
+    NaIHeigh = 10*cm;
+	NaIRadius = 4*cm;
+	teflonThickness = 1*mm;
+	rMin = 40*cm;
+    rMax = 55*cm;
+    length = 15*cm;
+    distanceFromCylinderEdge=5*mm;
 }
 
 
@@ -42,6 +51,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4VPhysicalVolume* worldPhys = ConstructWorld();
     ConstructHumanPhantom();
     ConstructCylinder();
+    ConstructDetector();
+    LocateDetectors();
     return worldPhys;
 }
 
@@ -81,9 +92,6 @@ void DetectorConstruction::ConstructHumanPhantom()
 void DetectorConstruction::ConstructCylinder()
 {
      G4Material* ppy = man->FindOrBuildMaterial("G4_POLYPROPYLENE");
-     G4double rMin = 40*cm;
-     G4double rMax = 55*cm;
-     G4double length = 15*cm;
      G4Tubs* theCylinder = new G4Tubs("theCylinder", rMin, rMax, length/2, 0*deg, 360*deg);
      cylinderLogVol = new G4LogicalVolume(theCylinder, ppy, "cylinderLogVol");
 
@@ -100,6 +108,51 @@ void DetectorConstruction::ConstructCylinder()
 //promień 4 cm
 //teflon 1 mm
 //odsunięcie od krawędzi: 5 mm
+
+void DetectorConstruction::ConstructDetector() 
+{
+	G4Tubs* naISolid = new G4Tubs("naISolid", 0*cm, NaIRadius, NaIHeigh/2., 0*deg, 360*deg);
+	G4Material* naIMaterial = man->FindOrBuildMaterial("G4_SODIUM_IODIDE");
+	G4LogicalVolume* naILogVol = new G4LogicalVolume(naISolid, naIMaterial, "NaILogVol");
+	
+	 G4VisAttributes* naIVisAtt = new G4VisAttributes(G4Colour(0.8,0.3,0.3, 1.));
+     naIVisAtt->SetForceAuxEdgeVisible(true);
+     naIVisAtt->SetForceSolid(true);
+     naILogVol->SetVisAttributes(naIVisAtt);
+     
+    G4Tubs* teflonSolid = new G4Tubs("naISolid", 0*cm, 
+       (NaIRadius+teflonThickness), NaIHeigh/2.+teflonThickness, 0*deg, 360*deg);
+	G4Material* teflonMaterial = man->FindOrBuildMaterial("G4_TEFLON");
+	detectorLogVol = new G4LogicalVolume(teflonSolid, teflonMaterial, "TeflonLogVol");
+	G4VisAttributes* teflonVisAtt = new G4VisAttributes(G4Colour(0.0,0.9,0.3, 0.8));
+    teflonVisAtt->SetForceAuxEdgeVisible(true);
+    detectorLogVol->SetVisAttributes(teflonVisAtt);
+	
+	G4ThreeVector pos(0,0, 0);
+    new G4PVPlacement(0,pos,naILogVol, "naIPhys",detectorLogVol,0,0);
+}
+
+void DetectorConstruction::LocateDetectors()
+{
+	G4double Rtot=rMin+distanceFromCylinderEdge+NaIHeigh/2.+teflonThickness;
+	G4double Htot=rMin+distanceFromCylinderEdge;
+	G4double singleDetAngle = 2*atan((NaIRadius+teflonThickness)/Htot);
+	G4int nrOfDetectors = (G4int)2.*CLHEP::pi/singleDetAngle;
+	std::cout << " Rtot: " << Rtot << " Htot: " << Htot << " nr fo Dets: " << nrOfDetectors << std::endl;
+	G4double deltaAngle = 2.*CLHEP::pi/31.;
+	
+	for(G4int i=0; i!= nrOfDetectors; ++i)
+	{
+		G4double posX = Rtot*sin(i*deltaAngle);
+		G4double posY = Rtot*cos(i*deltaAngle);
+		G4RotationMatrix* zRot = new G4RotationMatrix;
+		zRot->rotateZ(i*deltaAngle);
+		zRot->rotateX(90*deg);
+		G4ThreeVector pos(posX,posY, 0);
+		new G4PVPlacement(zRot,pos,detectorLogVol, "detectorPhys",cylinderLogVol,0,i, 1);
+	}
+	
+}
 
 void DetectorConstruction::ConstructSDandField() 
 {

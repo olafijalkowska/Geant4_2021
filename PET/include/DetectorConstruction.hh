@@ -25,10 +25,21 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   private:
     G4LogicalVolume* worldLogic; //świat
     G4LogicalVolume* cylinderLogVol;
+    G4LogicalVolume* detectorLogVol;
     G4NistManager* man;
+    G4double NaIHeigh;
+	G4double NaIRadius;
+	G4double teflonThickness;
+    G4double rMin;
+    G4double rMax;
+    G4double length;
+    G4double distanceFromCylinderEdge;
+    
     G4VPhysicalVolume* ConstructWorld(); //metoda w której świat zostanie zbudowany
     void ConstructHumanPhantom();
     void ConstructCylinder();
+    void ConstructDetector();
+    void LocateDetectors();
 
 };
 
