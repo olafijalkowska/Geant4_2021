@@ -19,13 +19,13 @@ EventAction::~EventAction()
 
 void EventAction::BeginOfEventAction(const G4Event* anEvent)
 {
-
+	std::cout << "Event: " << anEvent->GetEventID ()  << std::endl;
 }
  
 
 void EventAction::EndOfEventAction(const G4Event* anEvent)
 {
-  
+  std::cout << "END of event" << std::endl;
 }
 
 

@@ -41,7 +41,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 //	G4ThreeVector randomVec = GenerateIsotropicDirection();
 //	particleGun->SetParticleMomentumDirection(randomVec);
 //    particleGun->GeneratePrimaryVertex(anEvent);
-	GenerateBackgroundIncident(anEvent);
+//	GenerateBackgroundIncident(anEvent);
+	GeneratePositionIncident(anEvent);
 }	
 
 G4ThreeVector PrimaryGeneratorAction::GenerateIsotropicDirection()
@@ -59,7 +60,7 @@ void PrimaryGeneratorAction::GeneratePositionIncident(G4Event* anEvent)
 	G4ParticleDefinition* positron = particleTable->FindParticle("e+");
 	particleGun->SetParticleDefinition(positron);
 	particleGun->SetParticlePosition(G4ThreeVector(0.0*cm,0.0*cm,0.0*cm));
-	particleGun->SetParticleEnergy(600.0*keV);
+	particleGun->SetParticleEnergy(587.0*keV);
 	G4ThreeVector randomVec = GenerateIsotropicDirection();
 	particleGun->SetParticleMomentumDirection(randomVec);
 	particleGun->GeneratePrimaryVertex(anEvent);

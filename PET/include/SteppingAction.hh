@@ -12,6 +12,7 @@
 class SteppingAction : public G4UserSteppingAction
 {
   public:
+  	static double spineEnergyDep;
     SteppingAction();
     virtual ~SteppingAction();
     virtual void UserSteppingAction(const G4Step*); 

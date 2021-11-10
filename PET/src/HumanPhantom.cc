@@ -62,7 +62,7 @@ void HumanPhantom::ConstructSpine(double heigh)
    //aluVis->SetForceSolid(true);
    spineVis->SetForceAuxEdgeVisible(true);
    spineLogVol->SetVisAttributes(spineVis);
-   G4ThreeVector pos(0,10*cm,halfLength);
+   G4ThreeVector pos(0,0*cm,halfLength);
    new G4PVPlacement(0, pos, spineLogVol, "spinePhys", phantomLogVol, 0, 0);
 }
 
