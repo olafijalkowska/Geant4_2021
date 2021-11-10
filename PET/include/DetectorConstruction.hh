@@ -21,7 +21,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     virtual ~DetectorConstruction(); //destruktor
     virtual G4VPhysicalVolume* Construct(); //tu będzie wszystko budowane
     virtual void ConstructSDandField(); //tu póżniej zdefiniujemy czułe elementy detektora
+    static G4double worldSize;
 
+	
   private:
     G4LogicalVolume* worldLogic; //świat
     G4LogicalVolume* cylinderLogVol;

@@ -60,9 +60,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 G4VPhysicalVolume* DetectorConstruction::ConstructWorld()
 {
 
-    G4double worldX = 1.5*m;
-    G4double worldY = 1.5*m;
-    G4double worldZ = 1.5*m;
+    G4double worldX = worldSize/2.;
+    G4double worldY = worldSize/2.;
+    G4double worldZ = worldSize/2.;
     G4Box* worldSolid = new G4Box("worldSolid",worldX,worldY,worldZ);
     
     G4Material* vaccum = new G4Material("GalacticVacuum", 1., 1.01*g/mole,
@@ -160,7 +160,7 @@ void DetectorConstruction::ConstructSDandField()
 
 }
 
-
+G4double DetectorConstruction::worldSize=3*m;
 
 
 

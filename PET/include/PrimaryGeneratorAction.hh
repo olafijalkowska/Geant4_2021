@@ -10,6 +10,7 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
+#include <vector>
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
@@ -26,6 +27,9 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     G4ParticleTable* particleTable;
     G4ThreeVector GenerateIsotropicDirection();
     void GeneratePositionIncident(G4Event*);
+    void GenerateBackgroundIncident(G4Event*);
+    G4ThreeVector FindRandomPosition(G4double sizeX, G4double sizeY, G4double sizeZ);
+    std::vector<G4double> FindRandomBackgroundEnergy();
 };
 
 

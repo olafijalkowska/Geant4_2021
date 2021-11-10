@@ -9,6 +9,7 @@
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
+#include "DetectorConstruction.hh"
 
 
 PrimaryGeneratorAction::PrimaryGeneratorAction() : G4VUserPrimaryGeneratorAction()
@@ -40,7 +41,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 //	G4ThreeVector randomVec = GenerateIsotropicDirection();
 //	particleGun->SetParticleMomentumDirection(randomVec);
 //    particleGun->GeneratePrimaryVertex(anEvent);
-	GeneratePositionIncident(anEvent);
+	GenerateBackgroundIncident(anEvent);
 }	
 
 G4ThreeVector PrimaryGeneratorAction::GenerateIsotropicDirection()
@@ -62,4 +63,46 @@ void PrimaryGeneratorAction::GeneratePositionIncident(G4Event* anEvent)
 	G4ThreeVector randomVec = GenerateIsotropicDirection();
 	particleGun->SetParticleMomentumDirection(randomVec);
 	particleGun->GeneratePrimaryVertex(anEvent);
+}
+
+
+void PrimaryGeneratorAction::GenerateBackgroundIncident(G4Event* anEvent)
+{
+	G4ParticleDefinition* gamma = particleTable->FindParticle("gamma");
+	particleGun->SetParticleDefinition(gamma);
+	G4double worldSize = DetectorConstruction::worldSize;	
+	particleGun->SetParticlePosition(FindRandomPosition(worldSize, worldSize, worldSize));
+	
+	std::vector<G4double> energies = FindRandomBackgroundEnergy();
+	for(size_t i=0; i!=energies.size(); ++i)
+	{
+		particleGun->SetParticleEnergy(energies.at(i));
+		particleGun->SetParticleMomentumDirection(GenerateIsotropicDirection());
+		particleGun->GeneratePrimaryVertex(anEvent);
+	}
+}
+
+
+G4ThreeVector PrimaryGeneratorAction::FindRandomPosition(G4double sizeX, G4double sizeY, G4double sizeZ)
+{
+	G4double randomX = sizeX*G4UniformRand()-sizeX/2.;
+	G4double randomY = sizeY*G4UniformRand()-sizeY/2.;	
+	G4double randomZ = sizeZ*G4UniformRand()-sizeZ/2.;
+	return G4ThreeVector(randomX,randomY,randomZ);
+}
+
+std::vector<G4double> PrimaryGeneratorAction::FindRandomBackgroundEnergy()
+{
+	std::vector<G4double> energy;
+	int randomVal = (int)3*G4UniformRand();
+	if(randomVal<2)
+	{
+		energy.push_back(1461*keV);
+	}
+	else
+	{
+		energy.push_back(583*keV);
+		energy.push_back(2615*keV);
+	}
+	return energy;
 }
