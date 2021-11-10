@@ -26,7 +26,9 @@ void SteppingAction::UserSteppingAction(const G4Step* theStep)
 	G4String name = physVol->GetName();
 	
 	G4double energyDeposit = theStep->GetTotalEnergyDeposit();
-	std::cout << name << " " << energyDeposit << std::endl;
+	
+	if(name == "spinePhys")
+		spineEnergyDep+=energyDeposit;
 }
 
 double SteppingAction::spineEnergyDep = 0;
