@@ -24,7 +24,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 	void SetUpDefault();	
     G4ParticleGun* particleGun;
     G4ParticleTable* particleTable;
-
+    G4ThreeVector GenerateIsotropicDirection();
+    void GeneratePositionIncident(G4Event*);
 };
 
 

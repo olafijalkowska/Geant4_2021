@@ -8,6 +8,7 @@
 #include "G4ParticleGun.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
+#include "Randomize.hh"
 
 
 PrimaryGeneratorAction::PrimaryGeneratorAction() : G4VUserPrimaryGeneratorAction()
@@ -36,7 +37,29 @@ void PrimaryGeneratorAction::SetUpDefault()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {	
-    particleGun->GeneratePrimaryVertex(anEvent);
+//	G4ThreeVector randomVec = GenerateIsotropicDirection();
+//	particleGun->SetParticleMomentumDirection(randomVec);
+//    particleGun->GeneratePrimaryVertex(anEvent);
+	GeneratePositionIncident(anEvent);
 }	
 
+G4ThreeVector PrimaryGeneratorAction::GenerateIsotropicDirection()
+{	
+	G4double cosTheta = 2.*G4UniformRand()-1;
+	G4double sinTheta = pow((1-cosTheta*cosTheta),0.5);
+	G4double phi = 2*M_PI*G4UniformRand();
+	//std::cout << sinTheta*cos(phi) << " " << sinTheta*sin(phi) << " " << cosTheta << std::endl;
+	return G4ThreeVector(sinTheta*cos(phi),sinTheta*sin(phi),cosTheta );
+}
 
+
+void PrimaryGeneratorAction::GeneratePositionIncident(G4Event* anEvent)
+{
+	G4ParticleDefinition* positron = particleTable->FindParticle("e+");
+	particleGun->SetParticleDefinition(positron);
+	particleGun->SetParticlePosition(G4ThreeVector(0.0*cm,0.0*cm,0.0*cm));
+	particleGun->SetParticleEnergy(600.0*keV);
+	G4ThreeVector randomVec = GenerateIsotropicDirection();
+	particleGun->SetParticleMomentumDirection(randomVec);
+	particleGun->GeneratePrimaryVertex(anEvent);
+}
