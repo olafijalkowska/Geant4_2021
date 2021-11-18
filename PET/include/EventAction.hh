@@ -10,6 +10,7 @@
 #include "G4UserEventAction.hh"
 #include "G4Event.hh"
 #include <fstream>
+#include <map>
 
 class EventAction : public G4UserEventAction
 {
@@ -20,7 +21,8 @@ class EventAction : public G4UserEventAction
     virtual void EndOfEventAction(const G4Event*);
     
   private:
-	std::ofstream outputFile;
+	//std::ofstream outputFile;
+	std::map<G4int, G4int> bkgCounter;
 };
 
 #endif

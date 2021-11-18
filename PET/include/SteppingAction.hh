@@ -8,11 +8,13 @@
 #define SteppingACtion_H 1
 
 #include "G4UserSteppingAction.hh"
+#include <set>
 
 class SteppingAction : public G4UserSteppingAction
 {
   public:
   	static double spineEnergyDep;
+  	static std::set<int> firedDetectors;
     SteppingAction();
     virtual ~SteppingAction();
     virtual void UserSteppingAction(const G4Step*); 
