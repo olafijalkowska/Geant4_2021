@@ -11,25 +11,26 @@
 
 EventAction::EventAction()
 {
-
+	outputFile.open("spineEnDep.txt");
 }
  
 EventAction::~EventAction()
 {
+	outputFile.close();
 }
 
 
 void EventAction::BeginOfEventAction(const G4Event* anEvent)
 {
-	std::cout << "Event: " << anEvent->GetEventID ()  << std::endl;
+	//std::cout << "Event: " << anEvent->GetEventID ()  << std::endl;
 }
  
 
 void EventAction::EndOfEventAction(const G4Event* anEvent)
 {
-	std::cout << "en dep w kregosłupie: " << SteppingAction::spineEnergyDep/keV << " keV" << std::endl;
+	outputFile << anEvent->GetEventID () << " " 
+	           << SteppingAction::spineEnergyDep/keV << std::endl;
 	SteppingAction::spineEnergyDep = 0; //zerowanie, żeby w następny zdarzeniu naliczać od nowa
-  	std::cout << "END of event" << std::endl;
 }
 
 
